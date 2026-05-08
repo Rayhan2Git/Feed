@@ -6,7 +6,7 @@ from datetime import datetime
 
 # ── CONFIG ──
 START_ID   = 3100        # First ID to ever check (change to your preferred start)
-SCAN_AHEAD = 60          # How many IDs ahead of last known to check each run
+SCAN_AHEAD = 2200          # How many IDs ahead of last known to check each run
 MAX_WORKERS = 10         # Parallel checks (speed)
 STATE_FILE  = "state.json"
 M3U_FILE    = "playlist.m3u"
