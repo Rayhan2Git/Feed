@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DesiTales - Feed</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%; overflow: hidden;
+            background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* TikTok Style Container */
+        #feed-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        /* Each Video Slide */
+        .video-card {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Shows full video; use 'cover' for full screen crop */
+        }
+        /* UI Overlay */
+        .video-meta {
+            position: absolute;
+            bottom: 30px;
+            left: 15px;
+            right: 50px;
+            color: #fff;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .video-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+<div id="feed-container"></div>
+
+<script>
+    const PROXY_URL = "https://feedscroll.rayhandox.workers.dev/?url=";
+    const M3U_URL = "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u";
+
+    async function loadFeed() {
+        const container = document.getElementById('feed-container');
+        try {
+            const response = await fetch(M3U_URL);
+            const text = await response.text();
+            
+            // Basic M3U Parsing
+            const lines = text.split('\n');
+            let currentTitle = "";
+
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].startsWith('#EXTINF')) {
+                    currentTitle = lines[i].split(',')[1] || "Untitled";
+                } else if (lines[i].startsWith('http')) {
+                    const videoUrl = PROXY_URL + lines[i].trim();
+                    const card = createCard(videoUrl, currentTitle);
+                    container.appendChild(card);
+                }
+            }
+            setupObserver();
+        } catch (err) {
+            console.error("Feed error:", err);
+        }
+    }
+
+    function createCard(url, title) {
+        const div = document.createElement('div');
+        div.className = 'video-card';
+        div.innerHTML = `
+            <video loop playsinline webkit-playsinline src="${url}"></video>
+            <div class="video-meta">
+                <div class="video-title">${title}</div>
+            </div>
+        `;
+        // Add click to play/pause
+        div.addEventListener('click', (e) => {
+            const v = div.querySelector('video');
+            v.paused ? v.play() : v.pause();
+        });
+        return div;
+    }
+
+    // Auto-play the video in view
+    function setupObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target.querySelector('video');
+                if (entry.isIntersecting) {
+                    video.play().catch(() => {}); // Play if in view
+                } else {
+                    video.pause(); // Pause if scrolled away
+                }
+            });
+        }, { threshold: 0.7 });
+
+        document.querySelectorAll('.video-card').forEach(card => observer.observe(card));
+    }
+
+    loadFeed();
+</script>
+
+</body>
+</html>
+
