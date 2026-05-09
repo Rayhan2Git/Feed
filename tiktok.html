@@ -3,47 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DesiTales Lite</title>
+    <title>DesiTales Premium</title>
     <style>
-        :root { --tiktok-red: #fe2c55; }
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; color: white; }
-        
-        /* Fixed Scrolling - Prevents skipping 3-4 videos */
-        #feed { 
-            height: 100vh; 
-            overflow-y: scroll; 
-            scroll-snap-type: y mandatory; 
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        #feed::-webkit-scrollbar { display: none; }
-
-        .video-card { 
-            height: 100vh; width: 100vw; 
-            scroll-snap-align: start; 
-            scroll-snap-stop: always; /* THIS PREVENTS SKIPPING */
-            position: relative; 
-            background: #000; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
-
-        video { width: 100%; height: 100%; object-fit: contain; background: #000; z-index: 2; }
-
-        /* Sidebar UI */
+        #feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        .video-card { height: 100vh; width: 100vw; scroll-snap-align: start; scroll-snap-stop: always; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
+        video { width: 100%; height: 100%; object-fit: contain; z-index: 2; }
         .sidebar { position: absolute; right: 12px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
-        .pfp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: #333; }
-        .btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 28px; }
+        .btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 28px; text-shadow: 0 2px 4px #000; }
         .btn span { font-size: 12px; margin-top: 4px; font-weight: bold; }
-
-        /* Meta Text */
-        .meta { position: absolute; bottom: 40px; left: 15px; right: 80px; z-index: 10; pointer-events: none; text-shadow: 2px 2px 5px rgba(0,0,0,0.9); }
+        .meta { position: absolute; bottom: 40px; left: 15px; right: 80px; z-index: 10; pointer-events: none; text-shadow: 2px 2px 5px #000; }
         .handle { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
-        .desc { font-size: 14px; line-height: 1.3; }
-
-        /* Loading Spinner */
-        .loader { position: absolute; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; z-index: 1; }
+        .loader { position: absolute; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; z-index: 1; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -52,43 +23,43 @@
 <div id="feed"></div>
 
 <script>
-    // 1. CHANGE THIS to your exact worker URL if it's different!
-    const PROXY = "https://feedscroll.rayhandox.workers.dev/?url=";
-    const M3U_PATH = "playlist.m3u"; 
+    // Make sure this matches your worker URL exactly!
+    const WORKER_URL = "https://feedscroll.rayhandox.workers.dev/?url=";
+    const M3U_FILE = "playlist.m3u"; 
 
-    async function loadVideos() {
+    async function initFeed() {
         const feed = document.getElementById('feed');
         try {
-            const response = await fetch(M3U_PATH);
+            const response = await fetch(M3U_FILE);
             const text = await response.text();
             const lines = text.split('\n');
             
-            let currentTitle = "";
-            lines.forEach(line => {
+            let currentTitle = "Premium Content";
+
+            for (let line of lines) {
                 line = line.trim();
                 if (line.startsWith('#EXTINF')) {
-                    currentTitle = line.split(',')[1] || "DesiTales Video";
+                    currentTitle = line.split(',')[1] || "Premium Content";
                 } else if (line.startsWith('http')) {
-                    // We use simple link joining to avoid Worker "Forbidden" errors
-                    const videoUrl = PROXY + line; 
-                    const card = createVideoCard(videoUrl, currentTitle);
+                    // This creates the final proxied link
+                    const fullUrl = WORKER_URL + encodeURIComponent(line);
+                    const card = createCard(fullUrl, currentTitle);
                     feed.appendChild(card);
                 }
-            });
-            startObserver();
+            }
+            setupScrolling();
         } catch (e) {
-            feed.innerHTML = `<div style="padding:50px;text-align:center;">M3U Load Error</div>`;
+            feed.innerHTML = "<div style='padding:20px;text-align:center;'>Check your playlist.m3u file!</div>";
         }
     }
 
-    function createVideoCard(url, title) {
-        const card = document.createElement('div');
-        card.className = 'video-card';
-        card.innerHTML = `
+    function createCard(url, title) {
+        const div = document.createElement('div');
+        div.className = 'video-card';
+        div.innerHTML = `
             <div class="loader"></div>
             <video loop playsinline webkit-playsinline src="${url}"></video>
             <div class="sidebar">
-                <img class="pfp" src="https://ui-avatars.com/api/?name=DT&background=fe2c55&color=fff">
                 <button class="btn" onclick="this.style.color='#fe2c55'">❤️<span>14K</span></button>
                 <button class="btn">💬<span>128</span></button>
                 <button class="btn">🔗<span>Share</span></button>
@@ -99,26 +70,22 @@
             </div>
         `;
 
-        const v = card.querySelector('video');
-        // Tap to play/pause (Very important for mobile)
-        card.addEventListener('click', () => {
-            v.paused ? v.play() : v.pause();
-        });
+        const v = div.querySelector('video');
+        // Hide loader when video actually starts playing
+        v.addEventListener('playing', () => div.querySelector('.loader').style.display = 'none');
+        
+        // Manual play/pause if autoplay is blocked
+        div.addEventListener('click', () => v.paused ? v.play() : v.pause());
 
-        // Hide loader when video starts
-        v.addEventListener('playing', () => {
-            card.querySelector('.loader').style.display = 'none';
-        });
-
-        return card;
+        return div;
     }
 
-    function startObserver() {
+    function setupScrolling() {
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
                 if (entry.isIntersecting) {
-                    video.play().catch(e => console.log("User must tap to start"));
+                    video.play().catch(() => console.log("Tap to play"));
                 } else {
                     video.pause();
                 }
@@ -127,7 +94,7 @@
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
     }
 
-    window.onload = loadVideos;
+    window.onload = initFeed;
 </script>
 </body>
 </html>
