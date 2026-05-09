@@ -47,7 +47,7 @@ SITES = {
     },
 }
 
-SCAN_AHEAD  = 60      # ← Change to 2200 for first full scan
+SCAN_AHEAD  = 500      # ← Change to 2200 for first full scan
 MAX_WORKERS = 10
 STATE_FILE  = "state.json"
 M3U_FILE    = "playlist.m3u"
