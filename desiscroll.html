@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>DesiScroll</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --proxy:https://feedscroll.rayhandox.workers.dev;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{background:#000;color:#fff;font-family:'Space Grotesk',sans-serif;height:100%;overflow:hidden;touch-action:none}
+
+/* ── FEED CONTAINER ── */
+#feed{
+  position:fixed;inset:0;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+#feed::-webkit-scrollbar{display:none}
+
+/* ── VIDEO SLIDE ── */
+.slide{
+  position:relative;
+  width:100%;height:100vh;height:100dvh;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
+  background:#000;
+}
+
+video.main-vid{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+/* ── GRADIENT OVERLAYS ── */
+.grad-top{
+  position:absolute;top:0;left:0;right:0;
+  height:180px;
+  background:linear-gradient(180deg,rgba(0,0,0,.7) 0%,transparent 100%);
+  pointer-events:none;z-index:5;
+}
+.grad-bot{
+  position:absolute;bottom:0;left:0;right:0;
+  height:280px;
+  background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 100%);
+  pointer-events:none;z-index:5;
+}
+
+/* ── PLAY ICON ── */
+.play-icon{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  font-size:64px;opacity:.85;
+  transition:transform .15s,opacity .3s;
+  z-index:10;pointer-events:none;
+}
+.play-icon.show{transform:translate(-50%,-50%) scale(1)}
+.play-icon.hide{transform:translate(-50%,-50%) scale(0);opacity:0}
+
+/* ── INFO BAR ── */
+.info{
+  position:absolute;bottom:0;left:0;right:72px;
+  padding:16px 16px calc(var(--safe-bottom) + 70px);
+  z-index:10;
+}
+.info-source{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:99px;padding:3px 10px;
+  font-size:11px;font-weight:600;letter-spacing:.5px;
+  margin-bottom:8px;
+  backdrop-filter:blur(6px);
+}
+.dot{width:6px;height:6px;border-radius:50%}
+.dot-dt{background:#e50914}
+.dot-dk{background:#f97316}
+.dot-xa{background:#8b5cf6}
+.dot-ib{background:#22c55e}
+
+.info-title{
+  font-size:14px;font-weight:500;line-height:1.4;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:10px;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{
+  height:3px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:#fff;border-radius:2px;width:0%;
+  transition:width .1s linear;
+}
+
+/* ── SIDE ACTIONS ── */
+.actions{
+  position:absolute;right:12px;
+  bottom:calc(var(--safe-bottom) + 70px);
+  display:flex;flex-direction:column;gap:18px;
+  z-index:10;align-items:center;
+}
+.act-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;
+}
+.act-icon{
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  transition:transform .15s,background .2s;
+}
+.act-btn:active .act-icon{transform:scale(.88)}
+.act-label{font-size:10px;color:rgba(255,255,255,.7);font-weight:500}
+.act-btn.faved .act-icon{background:rgba(245,197,24,.25);border-color:#f5c518;color:#f5c518}
+
+/* ── HEADER ── */
+.header{
+  position:fixed;top:0;left:0;right:0;
+  padding:calc(var(--safe-top) + 8px) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:100;
+}
+.logo{
+  font-size:20px;font-weight:700;letter-spacing:-0.5px;
+  background:linear-gradient(90deg,#fff,rgba(255,255,255,.6));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.logo span{-webkit-text-fill-color:#e50914}
+
+.header-right{display:flex;gap:10px;align-items:center}
+
+.src-pill{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  border-radius:99px;padding:5px 10px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  transition:background .2s;
+}
+.src-pill:active{background:rgba(255,255,255,.2)}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;padding-bottom:var(--safe-bottom);
+  z-index:100;
+}
+.nav-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:10px 0;cursor:pointer;gap:3px;
+  color:rgba(255,255,255,.4);transition:color .2s;
+}
+.nav-tab.active{color:#fff}
+.nav-tab .ni{font-size:22px}
+.nav-tab .nl{font-size:10px;font-weight:600;letter-spacing:.3px}
+
+/* ── SOURCE FILTER SHEET ── */
+.sheet-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:200;opacity:0;pointer-events:none;
+  transition:opacity .25s;backdrop-filter:blur(4px);
+}
+.sheet-overlay.open{opacity:1;pointer-events:all}
+.sheet{
+  position:absolute;bottom:0;left:0;right:0;
+  background:#111;border-radius:20px 20px 0 0;
+  padding:16px 16px calc(var(--safe-bottom) + 20px);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.sheet-overlay.open .sheet{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:#333;border-radius:2px;margin:0 auto 16px}
+.sheet-title{font-size:15px;font-weight:700;margin-bottom:14px;color:#aaa;letter-spacing:.5px}
+.src-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:12px;
+  cursor:pointer;transition:background .15s;margin-bottom:6px;
+}
+.src-row:active{background:rgba(255,255,255,.06)}
+.src-row.active{background:rgba(255,255,255,.08)}
+.src-dot-big{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.src-info{flex:1}
+.src-name{font-size:15px;font-weight:600}
+.src-count{font-size:12px;color:#555;margin-top:2px}
+.src-check{font-size:18px;color:#22c55e}
+
+/* ── FAVS VIEW ── */
+#favView{
+  position:fixed;inset:0;background:#000;
+  z-index:50;display:none;
+  overflow-y:auto;
+  padding:calc(var(--safe-top) + 60px) 0 calc(var(--safe-bottom) + 70px);
+}
+#favView.open{display:block}
+.fav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px}
+.fav-thumb{
+  aspect-ratio:9/16;background:#111;
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.fav-thumb img{width:100%;height:100%;object-fit:cover}
+.fav-thumb-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.6) 0%,transparent 60%);
+}
+.fav-empty{
+  grid-column:1/-1;text-align:center;padding:80px 20px;color:#444;
+}
+.fav-empty .ei{font-size:48px;margin-bottom:10px}
+.fav-empty p{font-size:14px}
+
+/* ── LOADING ── */
+#loader{
+  position:fixed;inset:0;background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:500;
+}
+.loader-logo{font-size:32px;font-weight:700;margin-bottom:24px;letter-spacing:-1px}
+.loader-logo span{color:#e50914}
+.loader-bar{width:160px;height:3px;background:#111;border-radius:2px;overflow:hidden}
+.loader-fill{height:100%;background:linear-gradient(90deg,#e50914,#f97316);
+  border-radius:2px;width:0%;transition:width .3s}
+.loader-text{font-size:12px;color:#444;margin-top:12px;letter-spacing:.5px}
+
+/* ── MUTE BADGE ── */
+.mute-badge{
+  position:absolute;top:calc(var(--safe-top) + 52px);right:12px;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);
+  border-radius:99px;padding:4px 10px;font-size:12px;
+  z-index:20;cursor:pointer;transition:opacity .2s;
+  backdrop-filter:blur(8px);
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Desi<span>Scroll</span></div>
+  <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+  <div class="loader-text" id="loaderText">Loading feed...</div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Desi<span>Scroll</span></div>
+  <div class="header-right">
+    <div class="src-pill" onclick="openSheet()">
+      <span>🎬</span><span id="srcLabel">All</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEED -->
+<div id="feed"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-tab active" id="tab-feed" onclick="showFeed()">
+    <div class="ni">🏠</div><div class="nl">Feed</div>
+  </div>
+  <div class="nav-tab" id="tab-fav" onclick="showFavs()">
+    <div class="ni">⭐</div><div class="nl">Saved</div>
+  </div>
+  <div class="nav-tab" id="tab-settings" onclick="openSheet()">
+    <div class="ni">🎬</div><div class="nl">Sources</div>
+  </div>
+</div>
+
+<!-- SOURCE SHEET -->
+<div class="sheet-overlay" id="sheet" onclick="closeSheet(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">VIDEO SOURCES</div>
+    <div id="srcList"></div>
+  </div>
+</div>
+
+<!-- FAVS VIEW -->
+<div id="favView">
+  <div class="fav-grid" id="favGrid"></div>
+</div>
+
+<script>
+// ── CONFIG ──
+const PROXY   = 'https://feedscroll.rayhandox.workers.dev';
+const M3U_URL = 'https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u';
+
+const SITE_META = {
+  'DesiTales':   { color:'#e50914', dot:'dot-dt', emoji:'🔴' },
+  'DesiKahani':  { color:'#f97316', dot:'dot-dk', emoji:'🟠' },
+  'Xahani':      { color:'#8b5cf6', dot:'dot-xa', emoji:'🟣' },
+  'IndianBF':    { color:'#22c55e', dot:'dot-ib', emoji:'🟢' },
+};
+
+// ── STATE ──
+let allVideos    = [];
+let filtered     = [];
+let favorites    = new Set();
+let activeSource = 'All';
+let currentSlide = 0;
+let isMuted      = false;
+let activeVideos = {};  // slide index → video element
+let observer;
+
+// ── STORAGE ──
+function save() {
+  try { localStorage.setItem('ds2', JSON.stringify({fav:[...favorites], src:activeSource})); } catch{}
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('ds2')||'{}');
+    favorites    = new Set(d.fav||[]);
+    activeSource = d.src||'All';
+  } catch{}
+}
+
+// ── M3U PARSER ──
+function parseM3U(text) {
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const vids  = [];
+  let cur = {};
+  for (const line of lines) {
+    if (line.startsWith('#EXTINF')) {
+      cur = {};
+      const titleM = line.match(/,(.+)$/);
+      if (titleM) cur.title = titleM[1].trim();
+      const thumbM = line.match(/tvg-logo="([^"]+)"/);
+      if (thumbM) cur.thumb = thumbM[1];
+      const grpM   = line.match(/group-title="([^"]+)"/);
+      if (grpM) cur.source = grpM[1].trim();
+      const idM    = line.match(/tvg-id="([^"]+)"/);
+      if (idM) cur.tvgId = idM[1];
+    } else if (line.startsWith('http') && cur.title) {
+      cur.url = line;
+      // extract numeric id
+      const nm = line.match(/\/(\d+)\/\d+\.mp4/);
+      cur.id   = nm ? parseInt(nm[1]) : Math.random();
+      vids.push({...cur});
+      cur = {};
+    }
+  }
+  return vids;
+}
+
+// ── PROXY URL ──
+function proxyUrl(url) {
+  return `${PROXY}?url=${encodeURIComponent(url)}`;
+}
+
+// ── LOAD FEED ──
+async function loadFeed() {
+  setLoader(20, 'Fetching playlist...');
+  try {
+    const r    = await fetch(M3U_URL + '?t=' + Date.now());
+    const text = await r.text();
+    setLoader(60, 'Parsing videos...');
+    allVideos = parseM3U(text);
+    setLoader(80, 'Building feed...');
+    applyFilter();
+    setLoader(100, 'Ready!');
+    setTimeout(() => {
+      document.getElementById('loader').style.opacity = '0';
+      document.getElementById('loader').style.transition = 'opacity .4s';
+      setTimeout(() => document.getElementById('loader').style.display='none', 400);
+    }, 300);
+  } catch(e) {
+    setLoader(100, 'Error loading — check M3U URL');
+    console.error(e);
+  }
+}
+
+function setLoader(pct, txt) {
+  document.getElementById('loaderFill').style.width  = pct + '%';
+  document.getElementById('loaderText').textContent  = txt;
+}
+
+// ── FILTER ──
+function applyFilter() {
+  filtered = activeSource === 'All'
+    ? [...allVideos]
+    : allVideos.filter(v => v.source === activeSource);
+
+  // Shuffle for variety
+  for (let i = filtered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+  }
+
+  renderFeed();
+  document.getElementById('srcLabel').textContent = activeSource;
+}
+
+// ── RENDER FEED ──
+function renderFeed() {
+  const feed = document.getElementById('feed');
+  feed.innerHTML = '';
+  activeVideos   = {};
+
+  filtered.forEach((v, i) => {
+    const slide = createSlide(v, i);
+    feed.appendChild(slide);
+  });
+
+  setupObserver();
+}
+
+// ── CREATE SLIDE ──
+function createSlide(v, idx) {
+  const meta = SITE_META[v.source] || { color:'#fff', dot:'', emoji:'⚪' };
+  const isFav = favorites.has(v.tvgId || v.url);
+
+  const slide = document.createElement('div');
+  slide.className = 'slide';
+  slide.dataset.idx = idx;
+
+  slide.innerHTML = `
+    <video class="main-vid" playsinline preload="none" loop></video>
+    <div class="grad-top"></div>
+    <div class="grad-bot"></div>
+    <div class="play-icon" id="pi-${idx}">⏸</div>
+    <div class="mute-badge" onclick="toggleMute(${idx})" id="mute-${idx}">🔊</div>
+
+    <div class="info">
+      <div class="info-source">
+        <div class="dot ${meta.dot}" style="background:${meta.color}"></div>
+        ${v.source || 'Unknown'}
+      </div>
+      <div class="info-title">${v.title || 'Video'}</div>
+      <div class="progress-wrap">
+        <div class="progress-fill" id="prog-${idx}"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="act-btn ${isFav?'faved':''}" id="fav-${idx}" onclick="toggleFav(${idx})">
+        <div class="act-icon">${isFav?'★':'♡'}</div>
+        <div class="act-label">Save</div>
+      </div>
+      <div class="act-btn" onclick="shareVideo(${idx})">
+        <div class="act-icon">↗</div>
+        <div class="act-label">Share</div>
+      </div>
+      <div class="act-btn" onclick="nextSlide()">
+        <div class="act-icon">⏭</div>
+        <div class="act-label">Next</div>
+      </div>
+    </div>
+  `;
+
+  // Tap to play/pause
+  slide.querySelector('video').addEventListener('click', () => togglePlay(idx));
+
+  return slide;
+}
+
+// ── INTERSECTION OBSERVER ── auto-play on scroll
+function setupObserver() {
+  if (observer) observer.disconnect();
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const idx = parseInt(entry.target.dataset.idx);
+      const vid = entry.target.querySelector('video');
+
+      if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+        currentSlide = idx;
+        loadAndPlay(idx, vid, entry.target);
+      } else {
+        vid.pause();
+        vid.src = '';
+        clearInterval(vid._progInterval);
+      }
+    });
+  }, { threshold: [0.7] });
+
+  document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+}
+
+function loadAndPlay(idx, vid, slide) {
+  const v = filtered[idx];
+  if (!v) return;
+
+  // Load via proxy
+  vid.src    = proxyUrl(v.url);
+  vid.muted  = isMuted;
+  vid.loop   = true;
+
+  // Thumbnail poster
+  if (v.thumb) vid.poster = proxyUrl(v.thumb);
+
+  vid.play().catch(() => {
+    // Autoplay blocked — show tap to play
+    const pi = document.getElementById(`pi-${idx}`);
+    if (pi) { pi.textContent = '▶'; pi.classList.add('show'); }
+  });
+
+  // Progress bar
+  clearInterval(vid._progInterval);
+  const prog = document.getElementById(`prog-${idx}`);
+  vid._progInterval = setInterval(() => {
+    if (vid.duration && prog) {
+      prog.style.width = (vid.currentTime / vid.duration * 100) + '%';
+    }
+  }, 200);
+
+  activeVideos[idx] = vid;
+}
+
+// ── CONTROLS ──
+function togglePlay(idx) {
+  const vid = activeVideos[idx];
+  if (!vid) return;
+  const pi = document.getElementById(`pi-${idx}`);
+
+  if (vid.paused) {
+    vid.play();
+    if (pi) { pi.textContent = '▶'; pi.classList.add('show'); setTimeout(()=>pi.classList.remove('show'),600); }
+  } else {
+    vid.pause();
+    if (pi) { pi.textContent = '⏸'; pi.classList.add('show'); }
+  }
+}
+
+function toggleMute(idx) {
+  isMuted = !isMuted;
+  Object.values(activeVideos).forEach(v => v.muted = isMuted);
+  document.querySelectorAll('.mute-badge').forEach(b => {
+    b.textContent = isMuted ? '🔇' : '🔊';
+  });
+}
+
+function nextSlide() {
+  const next = document.querySelector(`.slide[data-idx="${currentSlide + 1}"]`);
+  if (next) next.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── FAVORITES ──
+function toggleFav(idx) {
+  const v   = filtered[idx];
+  const key = v.tvgId || v.url;
+  const btn = document.getElementById(`fav-${idx}`);
+
+  if (favorites.has(key)) {
+    favorites.delete(key);
+    btn.classList.remove('faved');
+    btn.querySelector('.act-icon').textContent = '♡';
+  } else {
+    favorites.add(key);
+    btn.classList.add('faved');
+    btn.querySelector('.act-icon').textContent = '★';
+  }
+  save();
+}
+
+// ── SHARE ──
+function shareVideo(idx) {
+  const v = filtered[idx];
+  if (navigator.share) {
+    navigator.share({ title: v.title, text: v.title, url: v.url }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(v.url).then(() => alert('Link copied!'));
+  }
+}
+
+// ── SOURCE SHEET ──
+function openSheet() {
+  document.getElementById('sheet').classList.add('open');
+  renderSheet();
+}
+
+function closeSheet(e) {
+  if (e.target === document.getElementById('sheet')) {
+    document.getElementById('sheet').classList.remove('open');
+  }
+}
+
+function renderSheet() {
+  const sources = ['All', ...Object.keys(SITE_META)];
+  const counts  = {};
+  allVideos.forEach(v => { counts[v.source] = (counts[v.source]||0) + 1; });
+
+  const list = document.getElementById('srcList');
+  list.innerHTML = sources.map(src => {
+    const meta  = SITE_META[src] || { color:'#fff', emoji:'🌐' };
+    const count = src === 'All' ? allVideos.length : (counts[src]||0);
+    const active = src === activeSource;
+    return `
+      <div class="src-row ${active?'active':''}" onclick="setSource('${src}')">
+        <div class="src-dot-big" style="background:${meta.color||'#fff'}"></div>
+        <div class="src-info">
+          <div class="src-name">${src}</div>
+          <div class="src-count">${count} videos</div>
+        </div>
+        ${active ? '<div class="src-check">✓</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function setSource(src) {
+  activeSource = src;
+  save();
+  document.getElementById('sheet').classList.remove('open');
+
+  // Pause all, clear feed, refilter
+  Object.values(activeVideos).forEach(v => { v.pause(); v.src=''; });
+  activeVideos = {};
+  applyFilter();
+  document.getElementById('feed').scrollTop = 0;
+}
+
+// ── VIEWS ──
+function showFeed() {
+  document.getElementById('favView').classList.remove('open');
+  document.getElementById('tab-feed').classList.add('active');
+  document.getElementById('tab-fav').classList.remove('active');
+}
+
+function showFavs() {
+  document.getElementById('favView').classList.add('open');
+  document.getElementById('tab-fav').classList.add('active');
+  document.getElementById('tab-feed').classList.remove('active');
+  renderFavGrid();
+}
+
+function renderFavGrid() {
+  const grid = document.getElementById('favGrid');
+  const favVids = allVideos.filter(v => favorites.has(v.tvgId||v.url));
+
+  if (favVids.length === 0) {
+    grid.innerHTML = `<div class="fav-empty"><div class="ei">⭐</div><p>No saved videos yet.<br>Tap ♡ on any video to save it.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = favVids.map(v => `
+    <div class="fav-thumb" onclick="playFav('${encodeURIComponent(v.url)}')">
+      <img src="${proxyUrl(v.thumb||'')}" loading="lazy" onerror="this.style.display='none'">
+      <div class="fav-thumb-overlay"></div>
+    </div>
+  `).join('');
+}
+
+function playFav(encodedUrl) {
+  const url  = decodeURIComponent(encodedUrl);
+  const idx  = filtered.findIndex(v => v.url === url);
+  if (idx >= 0) {
+    showFeed();
+    setTimeout(() => {
+      const slide = document.querySelector(`.slide[data-idx="${idx}"]`);
+      if (slide) slide.scrollIntoView();
+    }, 100);
+  }
+}
+
+// ── INIT ──
+load();
+loadFeed();
+</script>
+</body>
+</html>
