@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DesiTales Premium</title>
+    <title>DesiTales Lite</title>
     <style>
         :root { --tiktok-red: #fe2c55; }
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; color: white; }
         
-        /* Snap Container */
-        #feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        #feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         #feed::-webkit-scrollbar { display: none; }
 
         .video-card { 
@@ -20,53 +19,38 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            overflow: hidden;
         }
 
-        /* Blur Background Effect */
-        .bg-blur {
-            position: absolute; width: 100%; height: 100%;
-            object-fit: cover; filter: blur(20px) brightness(0.5);
-            z-index: 1; opacity: 0.6;
-        }
-
-        video.main-video { width: 100%; height: 100%; object-fit: contain; z-index: 2; position: relative; }
+        /* Removed Blur for better performance */
+        video.main-video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 
         /* Sidebar UI */
-        .sidebar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 18px; align-items: center; z-index: 10; }
-        .pfp-wrapper { position: relative; margin-bottom: 10px; }
-        .pfp { width: 48px; height: 48px; border-radius: 50%; border: 2px solid white; }
-        .plus-icon { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: var(--tiktok-red); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid black; }
+        .sidebar { position: absolute; right: 12px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
+        .pfp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: #333; }
         
-        .btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 30px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .btn span { font-size: 12px; margin-top: 2px; font-weight: 500; }
+        .btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 28px; }
+        .btn span { font-size: 12px; margin-top: 4px; font-weight: bold; }
 
-        /* Bottom Meta */
-        .meta { position: absolute; bottom: 30px; left: 15px; right: 80px; z-index: 10; pointer-events: none; }
-        .handle { font-weight: bold; font-size: 18px; margin-bottom: 6px; }
-        .desc { font-size: 15px; line-height: 1.4; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        /* Bottom Meta - Fixed Visibility */
+        .meta { position: absolute; bottom: 40px; left: 15px; right: 80px; z-index: 10; pointer-events: none; }
+        .handle { font-weight: bold; font-size: 18px; margin-bottom: 5px; color: #fff; text-shadow: 2px 2px 4px #000; }
+        .desc { font-size: 15px; color: #eee; text-shadow: 2px 2px 4px #000; }
 
         /* Progress Bar */
-        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 15; }
-        .progress-bar { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
-
-        /* Heart Animation */
-        .heart-pop { position: absolute; color: var(--tiktok-red); font-size: 100px; z-index: 100; animation: heartFade 0.8s ease-out forwards; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        @keyframes heartFade { 0% { transform: scale(0) rotate(-15deg); opacity: 0; } 50% { transform: scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 0; } }
-
-        /* Mute Control */
-        #mute-btn { position: absolute; top: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.4); border: none; color: white; padding: 10px; border-radius: 50%; font-size: 20px; }
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); z-index: 15; }
+        .progress-bar { height: 100%; background: var(--tiktok-red); width: 0%; }
+        
+        /* Loading Text */
+        .loading-text { position: absolute; font-size: 14px; color: #555; z-index: 1; }
     </style>
 </head>
 <body>
 
-<button id="mute-btn">🔊</button>
 <div id="feed"></div>
 
 <script>
     const PROXY = "https://feedscroll.rayhandox.workers.dev/?url=";
-    const M3U_PATH = "playlist.m3u"; // Same folder as tiktok.html
-    let isGlobalMuted = false;
+    const M3U_PATH = "playlist.m3u"; 
 
     async function loadVideos() {
         const feed = document.getElementById('feed');
@@ -75,12 +59,12 @@
             const text = await response.text();
             const lines = text.split('\n');
             
-            let currentTitle = "Exclusive Content";
+            let currentTitle = "";
 
             lines.forEach(line => {
                 line = line.trim();
                 if (line.startsWith('#EXTINF')) {
-                    currentTitle = line.split(',')[1] || "Exclusive Content";
+                    currentTitle = line.split(',')[1] || "Exclusive Video";
                 } else if (line.startsWith('http')) {
                     const videoUrl = PROXY + encodeURIComponent(line);
                     const card = createVideoCard(videoUrl, currentTitle);
@@ -89,7 +73,7 @@
             });
             startObserver();
         } catch (e) {
-            feed.innerHTML = `<div style="padding: 50px; text-align: center;">Error loading feed. Make sure playlist.m3u exists in this folder.</div>`;
+            feed.innerHTML = `<div style="padding: 50px; text-align: center;">Error: Link M3U properly.</div>`;
         }
     }
 
@@ -97,17 +81,14 @@
         const card = document.createElement('div');
         card.className = 'video-card';
         card.innerHTML = `
-            <img class="bg-blur" src="https://ui-avatars.com/api/?name=DT&background=333&color=fff">
-            <video class="main-video" loop playsinline webkit-playsinline src="${url}"></video>
+            <div class="loading-text">Loading...</div>
+            <video class="main-video" loop playsinline src="${url}"></video>
             
             <div class="sidebar">
-                <div class="pfp-wrapper">
-                    <img class="pfp" src="https://ui-avatars.com/api/?name=Desi+Tales&background=000&color=fff">
-                    <div class="plus-icon">+</div>
-                </div>
-                <button class="btn" onclick="likeVideo(this)">❤️<span>14.5K</span></button>
-                <button class="btn">💬<span>283</span></button>
-                <button class="btn" onclick="shareMe('${title}')">🔗<span>Share</span></button>
+                <img class="pfp" src="https://ui-avatars.com/api/?name=DT&background=fe2c55&color=fff">
+                <button class="btn" onclick="this.style.color='#fe2c55'">❤️<span>14K</span></button>
+                <button class="btn">💬<span>128</span></button>
+                <button class="btn">🔗<span>Share</span></button>
             </div>
 
             <div class="meta">
@@ -121,39 +102,20 @@
         const v = card.querySelector('video');
         const pBar = card.querySelector('.progress-bar');
 
-        // Progress listener
         v.addEventListener('timeupdate', () => {
             pBar.style.width = (v.currentTime / v.duration) * 100 + '%';
         });
 
-        // Double tap logic
-        let lastTap = 0;
-        card.addEventListener('touchend', (e) => {
-            let now = Date.now();
-            if (now - lastTap < 300) {
-                spawnHeart(e, card);
-            }
-            lastTap = now;
-        });
-
-        // Single tap toggle
-        card.addEventListener('click', (e) => {
-            if(e.target.tagName !== 'BUTTON') {
-                v.paused ? v.play() : v.pause();
+        // Click to Play/Pause (Essential for mobile)
+        card.addEventListener('click', () => {
+            if (v.paused) {
+                v.play().catch(e => console.log("Play failed"));
+            } else {
+                v.pause();
             }
         });
 
         return card;
-    }
-
-    function spawnHeart(e, parent) {
-        const h = document.createElement('div');
-        h.className = 'heart-pop';
-        h.innerHTML = '❤️';
-        h.style.left = 'calc(50% - 50px)';
-        h.style.top = 'calc(50% - 50px)';
-        parent.appendChild(h);
-        setTimeout(() => h.remove(), 800);
     }
 
     function startObserver() {
@@ -161,31 +123,15 @@
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
                 if (entry.isIntersecting) {
-                    video.muted = isGlobalMuted;
-                    video.play().catch(() => {});
+                    video.play().catch(() => {
+                        console.log("Waiting for user tap to play");
+                    });
                 } else {
                     video.pause();
-                    video.currentTime = 0;
                 }
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.5 });
         document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
-    }
-
-    document.getElementById('mute-btn').onclick = function() {
-        isGlobalMuted = !isGlobalMuted;
-        this.innerHTML = isGlobalMuted ? '🔇' : '🔊';
-        document.querySelectorAll('video').forEach(v => v.muted = isGlobalMuted);
-    };
-
-    function shareMe(title) {
-        if (navigator.share) {
-            navigator.share({ title: 'DesiTales', text: title, url: window.location.href });
-        }
-    }
-
-    function likeVideo(btn) {
-        btn.style.color = '#fe2c55';
     }
 
     window.onload = loadVideos;
