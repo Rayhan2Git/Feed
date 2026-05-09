@@ -3,118 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DesiTales - Feed</title>
+    <title>DesiTales Premium</title>
     <style>
-        body, html {
-            margin: 0; padding: 0;
-            height: 100%; overflow: hidden;
-            background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        /* TikTok Style Container */
-        #feed-container {
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
-        /* Each Video Slide */
-        .video-card {
-            height: 100vh;
-            width: 100vw;
-            scroll-snap-align: start;
-            position: relative;
-            display: flex;
-            align-items: center;
+        :root { --tiktok-red: #fe2c55; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; color: white; }
+        
+        /* Snap Container */
+        #feed { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        #feed::-webkit-scrollbar { display: none; }
+
+        .video-card { 
+            height: 100vh; width: 100vw; 
+            scroll-snap-align: start; 
+            position: relative; 
+            background: #000; 
+            display: flex; 
+            align-items: center; 
             justify-content: center;
-            background: #000;
+            overflow: hidden;
         }
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Shows full video; use 'cover' for full screen crop */
+
+        /* Blur Background Effect */
+        .bg-blur {
+            position: absolute; width: 100%; height: 100%;
+            object-fit: cover; filter: blur(20px) brightness(0.5);
+            z-index: 1; opacity: 0.6;
         }
-        /* UI Overlay */
-        .video-meta {
-            position: absolute;
-            bottom: 30px;
-            left: 15px;
-            right: 50px;
-            color: #fff;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .video-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+        video.main-video { width: 100%; height: 100%; object-fit: contain; z-index: 2; position: relative; }
+
+        /* Sidebar UI */
+        .sidebar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 18px; align-items: center; z-index: 10; }
+        .pfp-wrapper { position: relative; margin-bottom: 10px; }
+        .pfp { width: 48px; height: 48px; border-radius: 50%; border: 2px solid white; }
+        .plus-icon { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: var(--tiktok-red); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid black; }
+        
+        .btn { background: none; border: none; color: white; display: flex; flex-direction: column; align-items: center; font-size: 30px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .btn span { font-size: 12px; margin-top: 2px; font-weight: 500; }
+
+        /* Bottom Meta */
+        .meta { position: absolute; bottom: 30px; left: 15px; right: 80px; z-index: 10; pointer-events: none; }
+        .handle { font-weight: bold; font-size: 18px; margin-bottom: 6px; }
+        .desc { font-size: 15px; line-height: 1.4; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+        /* Progress Bar */
+        .progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 15; }
+        .progress-bar { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
+
+        /* Heart Animation */
+        .heart-pop { position: absolute; color: var(--tiktok-red); font-size: 100px; z-index: 100; animation: heartFade 0.8s ease-out forwards; pointer-events: none; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        @keyframes heartFade { 0% { transform: scale(0) rotate(-15deg); opacity: 0; } 50% { transform: scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 0; } }
+
+        /* Mute Control */
+        #mute-btn { position: absolute; top: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.4); border: none; color: white; padding: 10px; border-radius: 50%; font-size: 20px; }
     </style>
 </head>
 <body>
 
-<div id="feed-container"></div>
+<button id="mute-btn">🔊</button>
+<div id="feed"></div>
 
 <script>
-    const PROXY_URL = "https://feedscroll.rayhandox.workers.dev/?url=";
-    const M3U_URL = "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u";
+    const PROXY = "https://feedscroll.rayhandox.workers.dev/?url=";
+    const M3U_PATH = "playlist.m3u"; // Same folder as tiktok.html
+    let isGlobalMuted = false;
 
-    async function loadFeed() {
-        const container = document.getElementById('feed-container');
+    async function loadVideos() {
+        const feed = document.getElementById('feed');
         try {
-            const response = await fetch(M3U_URL);
+            const response = await fetch(M3U_PATH);
             const text = await response.text();
-            
-            // Basic M3U Parsing
             const lines = text.split('\n');
-            let currentTitle = "";
+            
+            let currentTitle = "Exclusive Content";
 
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].startsWith('#EXTINF')) {
-                    currentTitle = lines[i].split(',')[1] || "Untitled";
-                } else if (lines[i].startsWith('http')) {
-                    const videoUrl = PROXY_URL + lines[i].trim();
-                    const card = createCard(videoUrl, currentTitle);
-                    container.appendChild(card);
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith('#EXTINF')) {
+                    currentTitle = line.split(',')[1] || "Exclusive Content";
+                } else if (line.startsWith('http')) {
+                    const videoUrl = PROXY + encodeURIComponent(line);
+                    const card = createVideoCard(videoUrl, currentTitle);
+                    feed.appendChild(card);
                 }
-            }
-            setupObserver();
-        } catch (err) {
-            console.error("Feed error:", err);
+            });
+            startObserver();
+        } catch (e) {
+            feed.innerHTML = `<div style="padding: 50px; text-align: center;">Error loading feed. Make sure playlist.m3u exists in this folder.</div>`;
         }
     }
 
-    function createCard(url, title) {
-        const div = document.createElement('div');
-        div.className = 'video-card';
-        div.innerHTML = `
-            <video loop playsinline webkit-playsinline src="${url}"></video>
-            <div class="video-meta">
-                <div class="video-title">${title}</div>
+    function createVideoCard(url, title) {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+            <img class="bg-blur" src="https://ui-avatars.com/api/?name=DT&background=333&color=fff">
+            <video class="main-video" loop playsinline webkit-playsinline src="${url}"></video>
+            
+            <div class="sidebar">
+                <div class="pfp-wrapper">
+                    <img class="pfp" src="https://ui-avatars.com/api/?name=Desi+Tales&background=000&color=fff">
+                    <div class="plus-icon">+</div>
+                </div>
+                <button class="btn" onclick="likeVideo(this)">❤️<span>14.5K</span></button>
+                <button class="btn">💬<span>283</span></button>
+                <button class="btn" onclick="shareMe('${title}')">🔗<span>Share</span></button>
             </div>
+
+            <div class="meta">
+                <div class="handle">@DesiTales_Official</div>
+                <div class="desc">${title}</div>
+            </div>
+
+            <div class="progress-container"><div class="progress-bar"></div></div>
         `;
-        // Add click to play/pause
-        div.addEventListener('click', (e) => {
-            const v = div.querySelector('video');
-            v.paused ? v.play() : v.pause();
+
+        const v = card.querySelector('video');
+        const pBar = card.querySelector('.progress-bar');
+
+        // Progress listener
+        v.addEventListener('timeupdate', () => {
+            pBar.style.width = (v.currentTime / v.duration) * 100 + '%';
         });
-        return div;
+
+        // Double tap logic
+        let lastTap = 0;
+        card.addEventListener('touchend', (e) => {
+            let now = Date.now();
+            if (now - lastTap < 300) {
+                spawnHeart(e, card);
+            }
+            lastTap = now;
+        });
+
+        // Single tap toggle
+        card.addEventListener('click', (e) => {
+            if(e.target.tagName !== 'BUTTON') {
+                v.paused ? v.play() : v.pause();
+            }
+        });
+
+        return card;
     }
 
-    // Auto-play the video in view
-    function setupObserver() {
-        const observer = new IntersectionObserver((entries) => {
+    function spawnHeart(e, parent) {
+        const h = document.createElement('div');
+        h.className = 'heart-pop';
+        h.innerHTML = '❤️';
+        h.style.left = 'calc(50% - 50px)';
+        h.style.top = 'calc(50% - 50px)';
+        parent.appendChild(h);
+        setTimeout(() => h.remove(), 800);
+    }
+
+    function startObserver() {
+        const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
                 if (entry.isIntersecting) {
-                    video.play().catch(() => {}); // Play if in view
+                    video.muted = isGlobalMuted;
+                    video.play().catch(() => {});
                 } else {
-                    video.pause(); // Pause if scrolled away
+                    video.pause();
+                    video.currentTime = 0;
                 }
             });
-        }, { threshold: 0.7 });
-
-        document.querySelectorAll('.video-card').forEach(card => observer.observe(card));
+        }, { threshold: 0.6 });
+        document.querySelectorAll('.video-card').forEach(c => observer.observe(c));
     }
 
-    loadFeed();
-</script>
+    document.getElementById('mute-btn').onclick = function() {
+        isGlobalMuted = !isGlobalMuted;
+        this.innerHTML = isGlobalMuted ? '🔇' : '🔊';
+        document.querySelectorAll('video').forEach(v => v.muted = isGlobalMuted);
+    };
 
+    function shareMe(title) {
+        if (navigator.share) {
+            navigator.share({ title: 'DesiTales', text: title, url: window.location.href });
+        }
+    }
+
+    function likeVideo(btn) {
+        btn.style.color = '#fe2c55';
+    }
+
+    window.onload = loadVideos;
+</script>
 </body>
 </html>
-
