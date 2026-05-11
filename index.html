@@ -4,126 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>DesiFlix Pro</title>
+<title>DesiFlix</title>
 <style>
 /* ═══════════════════════════════════════
-   THEME & UI (From your original file)
+   RESET & ROOT
 ═══════════════════════════════════════ */
 :root {
   --red: #e50914;
+  --red2: #ff4d4d;
   --bg: #000;
   --surface: #111;
   --card: #181818;
+  --border: #2a2a2a;
   --text: #fff;
   --muted: #999;
-  --nav-h: 65px;
+  --dim: #555;
+  --gold: #f5c518;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+  --nav-h: 58px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; height: 100%; overflow: hidden; }
 
-/* Splash Screen */
-#splash { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
-.cherry { font-size: 80px; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-/* Layout */
-#app { display: none; height: 100%; flex-direction: column; }
-.page { display: none; height: calc(100% - var(--nav-h)); overflow-y: auto; padding-bottom: 20px; }
-.active { display: block; }
-
-/* Netflix Style Grid */
-.section-title { padding: 20px 15px 10px; font-weight: bold; font-size: 18px; }
-.movie-grid { display: flex; overflow-x: auto; gap: 10px; padding: 0 15px; scrollbar-width: none; }
-.movie-grid::-webkit-scrollbar { display: none; }
-.movie-card { min-width: 110px; background: var(--card); border-radius: 4px; overflow: hidden; }
-.movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-
-/* TikTok Vertical Scroll */
-#scrollPage { background: #000; height: calc(100% - var(--nav-h)); overflow-y: scroll; snap-type: y mandatory; }
-.v-video { height: 100%; width: 100%; snap-align: start; position: relative; display: flex; align-items: center; justify-content: center; background: #111; }
-.v-video video { width: 100%; height: 100%; object-fit: cover; }
-
-/* Navigation */
-nav { height: var(--nav-h); background: rgba(0,0,0,0.9); display: flex; border-top: 1px solid #222; }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; cursor: pointer; }
-.nav-item.active-tab { color: var(--red); }
-.nav-item i { font-size: 20px; margin-bottom: 3px; font-style: normal; }
-
-/* Player Overlay */
-#playerOverlay { position: fixed; inset: 0; z-index: 10000; background: #000; display: none; }
-.close-p { position: absolute; top: 30px; left: 20px; font-size: 30px; z-index: 10001; color: white; }
-</style>
-</head>
-<body>
-
-<div id="splash">
-  <div class="cherry">🍒</div>
-  <h1 style="color:var(--red); letter-spacing: 4px;">DESIFLIX</h1>
-</div>
-
-<div id="app">
-  <main style="flex:1; overflow:hidden;">
-    <section id="homePage" class="page active">
-       <header style="padding: 20px; font-size: 24px; color: var(--red); font-weight: bold;">DESIFLIX</header>
-       <div class="section-title">Trending Now</div>
-       <div id="trendingGrid" class="movie-grid"></div>
-       <div class="section-title">Recently Added</div>
-       <div id="recentGrid" class="movie-grid"></div>
-    </section>
-    
-    <section id="scrollPage" class="page"></section>
-
-    <section id="profilePage" class="page">
-      <div style="padding: 50px 20px; text-align: center;">
-        <h2>Settings</h2>
-        <p style="color:var(--muted); margin-top: 10px;">Web App Version 1.2.0</p>
-      </div>
-    </section>
-  </main>
-
-  <nav>
-    <div class="nav-item active-tab" onclick="switchTab('home')"><i>🏠</i>Home</div>
-    <div class="nav-item" onclick="switchTab('scroll')"><i>🎬</i>Scroll</div>
-    <div class="nav-item" onclick="switchTab('profile')"><i>👤</i>Profile</div>
-  </nav>
-</div>
-
-<div id="playerOverlay">
-  <div class="close-p" onclick="closePlayer()">✕</div>
-  <video id="mainPlayer" controls playsinline></video>
-</div>
-
-<script>
-const CFG = {
-  m3u: "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u",
-  proxy: "https://feedscroll.rayhandox.workers.dev/?url="
-};
-
-// TAB SYSTEM
-function switchTab(tabId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(tabId + 'Page').classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active-tab'));
-  event.currentTarget.classList.add('active-tab');
-  
-  // Pause videos if leaving scroll tab
-  if(tabId !== 'scroll') {
-      const vids = document.querySelectorAll('#scrollPage video');
-      vids.forEach(v => v.pause());
-  }
+/* ═══════════════════════════════════════
+   SPLASH (FIXED LOGIC)
+═══════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; background: #000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; transition: opacity .5s;
 }
+.splash-logo { font-size: 42px; font-weight: 900; letter-spacing: -1px; color: var(--red); margin-bottom: 6px; }
+.splash-cherry { font-size: 32px; margin-bottom: 28px; }
+.splash-bar { width: 120px; height: 3px; background: #1a1a1a; border-radius: 2px; overflow: hidden; }
+.splash-fill { height: 100%; background: var(--red); border-radius: 2px; animation: splashLoad 2s ease forwards; }
+@keyframes splashLoad { 0%{width:0%} 100%{width:100%} }
+.splash-ver { font-size: 11px; color: #333; margin-top: 14px; letter-spacing: 1px; }
 
-// PLAYER LOGIC
-function openPlayer(url) {
-  const v = document.getElementById('mainPlayer');
-  v.src = CFG.proxy + encodeURIComponent(url);
-  document.getElementById('playerOverlay').style.display = 'block';
-  v.play();
+/* ═══════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════ */
+#app { display: none; flex-direction: column; height: 100vh; height: 100dvh; opacity: 0; transition: opacity 0.5s; }
+
+/* ═══════════════════════════════════════
+   TOP HEADER
+═══════════════════════════════════════ */
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: calc(var(--safe-top) + 8px) 14px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 80;
+  transition: background .3s;
 }
+.top-bar.scrolled { background: rgba(0,0,0,.95); backdrop-filter: blur(12px); }
+.tb-logo { font-size: 22px; font-weight: 900; color: var(--red); letter-spacing: -.5px; }
+.tb-right { display: flex; gap: 8px; align-items: center; }
+.tb-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.08); border: none; color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-function closePlayer() {
-  const v = document.getElementById('mainPlayer');
+/* ═══════════════════════════════════════
+   PAGES
+═══════════════════════════════════════ */
+.page { position: fixed; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-top: calc(var(--safe-top) + 52px); padding-bottom: calc(var(--safe-bot) + var(--nav-h) + 10px); display: none; }
+.page.active { display: block; }
+.page::-webkit-scrollbar { display: none; }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + var(--safe-bot));
+  background: rgba(0,0,0,.97); backdrop-filter: blur(20px);
+  border-top: 1px solid #1a1a1a;
+  display: flex; align-items: flex-start; padding-top: 6px;
+  z-index: 80;
+}
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px 0; color: #444; transition: color .18s; }
+.nav-item.on { color: #fff; }
+.nav-item .ni { font-size: 22px; }
+.nav-item .nl { font-size: 10px; font-weight: 600; letter-spacing: .3px; }
+.nav-item.on .nl { color: var(--red); }
+
+/* ═══════════════════════════════════════
+   HOME PAGE — NETFLIX STYLE
+═══════════════════════════════════════ */
+.hero { position: relative; width: 100%; height: 58vw; min-height: 200px; max-height: 280px; overflow: hidden; margin-bottom: 16px; }
+.hero-bg { width: 100%; height: 100%; object-fit: cover; filter: brightness(.45); background: linear-gradient(135deg, #1a0000, #0d0d0d); }
+.hero-grad { position: absolute; inset: 0; background: linear-gradient(0deg, #000 0%, rgba(0,0,0,.4) 50%, transparent 100%); }
+.hero-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; }
+.hero-src { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); border-radius: 99px; padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+.hero-title { font-size: 18px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
+.hero-btns { display: flex; gap: 8px; }
+.hero-btn { display: flex; align-items: center; gap: 5px; border-radius: 6px; font-size: 13px; font-weight: 700; padding: 8px 16px; border: none; cursor: pointer; transition: opacity .15s; }
+.hb-play { background: #fff; color: #000; }
+.hb-save { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+
+.row-section { margin-bottom: 20px; }
+.row-hdr { display: flex; align-items: center; justify-content: space-between; padding: 0 14px; margin-bottom: 8px; }
+.row-title { font-size: 14px; font-weight: 700; letter-spacing: .2px; }
+.row-cnt { font-size: 11px; color: var(--muted); }
+.row-scroll { display: flex; gap: 8px; padding: 0 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.row-scroll::-webkit-scrollbar { display: none; }
+
+.hcard { flex-shrink: 0; width: 130px; border-radius: 8px; overflow: hidden; background: var(--card); cursor: pointer; transition: transform .15s; }
+.hcard-thumb { width: 130px; height: 73px; object-fit: cover; display: block; background: #111; }
+.hcard-title { font-size: 11px; font-weight: 500; color: #ccc; padding: 5px 6px 6px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.v-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 14px; }
+.vcard { background: var(--card); border-radius: 10px; overflow: hidden; cursor: pointer; position: relative; transition: transform .15s; animation: fadeUp .3s ease both; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.vthumb-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #111; position: relative; }
+.vthumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.src-badge { position: absolute; bottom: 4px; left: 4px; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; background: var(--red); }
+.fav-btn { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,.7); border: none; color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center; z-index: 5; }
+.vinfo { padding: 7px 8px 9px; }
+.vtitle { font-size: 12px; font-weight: 500; color: #ddd; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ═══════════════════════════════════════
+   SCROLL PAGE — TIKTOK STYLE
+═══════════════════════════════════════ */
+#scrollPage { padding: 0; overflow: hidden; }
+#feed { position: absolute; inset: 0; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.slide { position: relative; width: 100%; height: 100vh; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; background: #111; }
+.slide video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slide-info { position: absolute; bottom: 0; left: 0; right: 66px; padding: 14px 14px calc(var(--safe-bot) + var(--nav-h) + 10px
   v.pause(); v.src = "";
   document.getElementById('playerOverlay').style.display = 'none';
 }
@@ -200,3 +205,120 @@ init();
 </script>
 </body>
 </html>
+// ════════════════════════════════════════
+//  CONFIG & DATA
+// ════════════════════════════════════════
+const CFG = {
+  m3u: "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u",
+  proxy: "https://feedscroll.rayhandox.workers.dev/?url=",
+  version: "1.2.0"
+};
+
+let allVideos = [];
+
+// ════════════════════════════════════════
+//  INIT & SPLASH FIX (FORCE HIDE)
+// ════════════════════════════════════════
+async function init() {
+  // 1. Start loading data in the background
+  loadData();
+
+  // 2. FORCE HIDE Splash after 2.5 seconds no matter what
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    const app = document.getElementById('app');
+    
+    if (splash) {
+      splash.style.opacity = '0';
+      setTimeout(() => {
+        splash.style.display = 'none';
+        app.style.display = 'flex';
+        console.log("App revealed by timer force-hide");
+      }, 500);
+    }
+  }, 2500);
+}
+
+// ════════════════════════════════════════
+//  DATA LOADING
+// ════════════════════════════════════════
+async function loadData() {
+  try {
+    const response = await fetch(CFG.m3u);
+    const data = await response.text();
+    allVideos = parseM3U(data);
+    renderGrids(allVideos);
+  } catch (err) {
+    console.error("Failed to load playlist:", err);
+  }
+}
+
+function parseM3U(data) {
+  const items = [];
+  const lines = data.split('\n');
+  let current = {};
+  
+  lines.forEach(line => {
+    if (line.startsWith('#EXTINF:')) {
+      const name = line.split(',')[1] || "Untitled";
+      const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+      current = { 
+        name: name.trim(), 
+        logo: logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150x225?text=No+Poster' 
+      };
+    } else if (line.startsWith('http')) {
+      current.url = line.trim();
+      items.push(current);
+      current = {};
+    }
+  });
+  return items;
+}
+
+function renderGrids(videos) {
+  const trending = document.getElementById('trendingGrid');
+  const recent = document.getElementById('recentGrid');
+  
+  if (!trending || !recent) return;
+  
+  trending.innerHTML = "";
+  recent.innerHTML = "";
+
+  videos.forEach(v => {
+    const card = `
+      <div class="movie-card" onclick="openPlayer('${v.url}')">
+        <img src="${v.logo}" loading="lazy">
+        <p style="font-size:10px; padding:5px; white-space:nowrap; overflow:hidden;">${v.name}</p>
+      </div>`;
+    trending.innerHTML += card;
+    recent.innerHTML += card;
+  });
+}
+
+// ════════════════════════════════════════
+//  CONTROLS
+// ════════════════════════════════════════
+function openPlayer(url) {
+  const player = document.getElementById('mainPlayer');
+  const overlay = document.getElementById('playerOverlay');
+  player.src = CFG.proxy + encodeURIComponent(url);
+  overlay.style.display = 'block';
+  player.play();
+}
+
+function closePlayer() {
+  const player = document.getElementById('mainPlayer');
+  player.pause();
+  player.src = "";
+  document.getElementById('playerOverlay').style.display = 'none';
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(tabId + 'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active-tab'));
+  event.currentTarget.classList.add('active-tab');
+}
+
+// Start everything
+window.addEventListener('DOMContentLoaded', init);
