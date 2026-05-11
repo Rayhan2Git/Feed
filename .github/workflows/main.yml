@@ -15,7 +15,7 @@ jobs:
 
       - name: Clean and Prepare
         run: |
-          rm -rf android www package-lock.json
+          rm -rf android www
           mkdir -p www
           cp index.html www/index.html
 
@@ -23,9 +23,8 @@ jobs:
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Create Fresh Capacitor Config
+      - name: Create Capacitor Config
         run: |
-          # This creates the capacitor.config.json file automatically
           cat <<EOF > capacitor.config.json
           {
             "appId": "com.rayhan.desiflix",
@@ -58,6 +57,7 @@ jobs:
                   </activity>
               </application>
               <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
           </manifest>
           EOF
 
