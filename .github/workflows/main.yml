@@ -13,34 +13,35 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies
-        run: |
-          npm install @capacitor/cli@latest @capacitor/core@latest @capacitor/android@latest
-
-      - name: Initialize Capacitor
+      - name: Initialize App Folders
         run: |
           mkdir -p www
           cp index.html www/index.html
-          npx cap init DesiFlix com.rayhan.desiflix --web-dir www
-          npx cap add android
 
-      - name: Configure Android Manifest
+      - name: Install Capacitor Tools
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Create Capacitor Config
+        run: |
+          npx cap init DesiFlix com.rayhan.desiflix --web-dir www --npm-client npm
+
+      - name: Add Android Platform
+        run: |
+          npx cap add android
+          npx cap copy android
+
+      - name: Configure Pro Settings
         run: |
           cat <<EOF > android/app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.rayhan.desiflix">
               <application 
                   android:hardwareAccelerated="true" 
                   android:largeHeap="true" 
                   android:usesCleartextTraffic="true"
-                  android:icon="@mipmap/ic_launcher"
                   android:label="DesiFlix">
-                  <activity 
-                      android:name=".MainActivity" 
-                      android:exported="true" 
-                      android:screenOrientation="portrait" 
-                      android:theme="@style/AppTheme.NoActionBarLaunch" 
-                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
+                  <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBarLaunch" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
@@ -52,9 +53,14 @@ jobs:
           </manifest>
           EOF
 
+      - name: Java Setup
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Build APK
         run: |
-          npx cap copy android
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
