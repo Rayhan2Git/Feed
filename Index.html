@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DesiFlix Pro 🍒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --netflix-red: #E50914; }
+        body { background-color: #000; color: #fff; -webkit-user-select: none; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        .active-tab { color: var(--netflix-red); border-top: 2px solid var(--netflix-red); }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <div id="splash" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="text-6xl mb-4">🍒</div>
+        <h1 class="text-2xl font-bold tracking-tighter text-red-600">DESIFLIX PRO</h1>
+        <div class="mt-8 w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div class="h-full bg-red-600 animate-progress"></div>
+        </div>
+    </div>
+
+    <div id="app" class="pb-20">
+        <header class="fixed top-0 w-full z-40 p-4 flex justify-between items-center transition-colors duration-300" id="navbar">
+            <div class="text-red-600 font-black text-2xl">🍒</div>
+            <div class="flex gap-4">
+                <button onclick="switchTab('search')">🔍</button>
+                <div class="w-8 h-8 rounded bg-gradient-to-tr from-red-600 to-purple-600"></div>
+            </div>
+        </header>
+
+        <main id="content-area" class="pt-16">
+            <section id="home-page" class="page">
+                <div id="hero" class="w-full h-[70vh] relative mb-8">
+                    </div>
+                <div id="rows-container" class="px-4 space-y-8">
+                    </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-0 w-full glass z-50 border-t border-white/10 flex justify-around py-3">
+            <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1">
+                <span>🏠</span><span class="text-[10px]">Home</span>
+            </button>
+            <button onclick="switchTab('scroll')" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+                <span>🎬</span><span class="text-[10px]">Scroll</span>
+            </button>
+            <button onclick="switchTab('profile')" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+                <span>👤</span><span class="text-[10px]">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        // APP CONFIG
+        const CFG = {
+            m3u: "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u",
+            proxy: "https://feedscroll.rayhandox.workers.dev/?url="
+        };
+
+        // Initialize App
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => document.getElementById('splash').remove(), 700);
+            }, 2000);
+            fetchM3U();
+        };
+
+        async function fetchM3U() {
+            try {
+                const response = await fetch(CFG.m3u);
+                const data = await response.text();
+                // Logic to parse M3U and inject into rows...
+                renderHome();
+            } catch (e) { console.error("Load failed"); }
+        }
+
+        function switchTab(tab) {
+            // Tab switching logic
+        }
+    </script>
+</body>
+</html>
