@@ -1,114 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<meta name="theme-color" content="#000000">
-<title>DesiFlix Pro 🍒</title>
-<style>
-:root {
-  --red: #e50914;
-  --bg: #000;
-  --surface: #111;
-  --card: #181818;
-  --border: #2a2a2a;
-  --text: #fff;
-  --muted: #999;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bot: env(safe-area-inset-bottom, 0px);
-  --nav-h: 65px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DesiFlix Web 🍒</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        :root {
+            --red: #e50914;
+            --bg: #000;
+            --card: #141414;
+            --text: #fff;
+            --gray: #808080;
+        }
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); color: var(--text); font-family: sans-serif; height: 100vh; overflow: hidden; }
+        body, html {
+            margin: 0; padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
 
-/* SPLASH SCREEN */
-#splash {
-  position: fixed; inset: 0; z-index: 9999; background: #000;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.6s ease;
-}
-.cherry { font-size: 80px; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        /* ══════ NAVBAR ══════ */
+        header {
+            position: fixed; top: 0; width: 100%;
+            height: 60px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 1000;
+            box-sizing: border-box;
+        }
 
-/* APP LAYOUT */
-#app { display: none; height: 100%; flex-direction: column; }
-.page { display: none; height: calc(100% - var(--nav-h)); overflow-y: auto; padding-top: var(--safe-top); }
-.page.active { display: block; }
+        .logo { color: var(--red); font-size: 28px; font-weight: bold; letter-spacing: -1px; }
 
-/* TOP BAR */
-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: fixed; top: 0; width: 100%; z-index: 100; }
+        /* ══════ HERO SECTION ══════ */
+        .hero {
+            width: 100%; height: 70vh;
+            background: linear-gradient(to top, var(--bg), transparent), url('https://wallpaperaccess.com/full/1512225.jpg');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 40px 20px; box-sizing: border-box;
+        }
 
-/* NAV */
-nav {
-  height: var(--nav-h); background: rgba(0,0,0,0.95);
-  backdrop-filter: blur(10px); border-top: 1px solid var(--border);
-  display: flex; justify-content: space-around; align-items: center;
-  padding-bottom: var(--safe-bot);
-}
-.nav-item { color: var(--muted); text-align: center; font-size: 10px; flex: 1; text-decoration: none; }
-.nav-item.active-tab { color: var(--red); }
-.nav-item i { display: block; font-size: 22px; margin-bottom: 2px; font-style: normal; }
+        /* ══════ VIDEO GRID ══════ */
+        .section-title { padding: 20px 20px 10px; font-size: 18px; font-weight: bold; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px; padding: 0 20px 100px;
+        }
 
-/* PLAYER */
-#playerOverlay { position: fixed; inset: 0; z-index: 10000; background: #000; display: none; }
-video { width: 100%; height: 100%; object-fit: contain; }
-.close-btn { position: absolute; top: 40px; left: 20px; font-size: 30px; color: #fff; z-index: 10001; text-shadow: 0 0 10px #000; }
-</style>
+        .movie-card {
+            background: var(--card);
+            border-radius: 4px; overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .movie-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
+        .movie-card p { font-size: 11px; padding: 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ══════ PLAYER OVERLAY ══════ */
+        #player {
+            position: fixed; inset: 0; background: #000;
+            display: none; z-index: 2000;
+        }
+        video { width: 100%; height: 100%; }
+        .close-player {
+            position: absolute; top: 30px; left: 20px;
+            font-size: 35px; color: white; z-index: 2001; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<div id="splash">
-  <div class="cherry">🍒</div>
-  <h1 style="color:var(--red); letter-spacing: 4px; margin-top:10px;">DESIFLIX</h1>
-  <p id="splashVer" style="font-size:12px; color:#555; margin-top:20px;">v1.1.0</p>
-</div>
+    <header>
+        <div class="logo">DESIFLIX</div>
+        <div style="font-size: 24px;">🔍</div>
+    </header>
 
-<div id="app">
-  <header id="topBar">
-    <span style="color:var(--red); font-weight:bold; font-size:24px;">🍒</span>
-    <div style="font-size:20px;">🔍</div>
-  </header>
+    <div class="hero">
+        <h1 style="font-size: 40px; margin: 0;">Featured Feed</h1>
+        <p style="color: var(--gray); margin: 10px 0;">Latest Cinema & Streams</p>
+    </div>
 
-  <main style="flex:1; overflow:hidden;">
-    <section id="homePage" class="page active">
-       <div id="feed" style="padding: 80px 15px 20px;">
-         <h2 style="margin-bottom:15px;">Recently Added</h2>
-         <div id="movieContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-           </div>
-       </div>
-    </section>
-    
-    <section id="scrollPage" class="page">
-      <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--muted);">
-        Shorts/Scroll Content Coming Soon
-      </div>
-    </section>
+    <div class="section-title">Trending Now</div>
+    <div class="grid" id="movie-grid">
+        <div style="color: var(--gray);">Fetching playlist...</div>
+    </div>
 
-    <section id="profilePage" class="page">
-      <div style="padding:100px 20px;">
-        <h2>My Profile</h2>
-        <div style="margin-top:20px; padding:15px; background:var(--card); border-radius:8px;">
-          <p style="color:var(--muted)">App Version</p>
-          <p>1.1.0 (Pro Build)</p>
-        </div>
-        <button onclick="location.reload()" style="margin-top:20px; width:100%; background:var(--red); color:#fff; border:none; padding:15px; border-radius:8px; font-weight:bold;">Refresh App</button>
-      </div>
-    </section>
-  </main>
+    <div id="player">
+        <div class="close-player" onclick="closeVideo()">×</div>
+        <video id="video-element" controls playsinline></video>
+    </div>
 
-  <nav>
-    <div class="nav-item active-tab" onclick="switchTab('home')"><i>🏠</i>Home</div>
-    <div class="nav-item" onclick="switchTab('scroll')"><i>🎬</i>Scroll</div>
-    <div class="nav-item" onclick="switchTab('profile')"><i>👤</i>Profile</div>
-  </nav>
-</div>
+    <script>
+        const M3U_URL = "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u";
+        const PROXY = "https://feedscroll.rayhandox.workers.dev/?url=";
 
-<div id="playerOverlay">
-  <div class="close-btn" onclick="closePlayer()">✕</div>
-  <video id="mainPlayer" controls playsinline></video>
-</div>
+        async function fetchPlaylist() {
+            try {
+                const response = await fetch(M3U_URL);
+                const data = await response.text();
+                parseM3U(data);
+            } catch (error) {
+                document.getElementById('movie-grid').innerHTML = "Failed to load playlist.";
+            }
+        }
 
+        function parseM3U(data) {
+            const lines = data.split('\n');
+            const grid = document.getElementById('movie-grid');
+            grid.innerHTML = ''; // Clear loading text
+            
+            let currentItem = {};
+
+            lines.forEach(line => {
+                if (line.startsWith('#EXTINF:')) {
+                    const title = line.split(',')[1] || "Untitled Content";
+                    const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+                    currentItem.title = title;
+                    currentItem.logo = logoMatch ? logoMatch[1] : "https://via.placeholder.com/150x225?text=No+Poster";
+                } else if (line.startsWith('http')) {
+                    currentItem.url = line.trim();
+                    createCard(currentItem);
+                    currentItem = {};
+                }
+            });
+        }
+
+        function createCard(item) {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.onclick = () => playVideo(item.url);
+            card.innerHTML = `
+                <img src="${item.logo}" loading="lazy">
+                <p>${item.title}</p>
+            `;
+            document.getElementById('movie-grid').appendChild(card);
+        }
+
+        function playVideo(url) {
+            const player = document.getElementById('player');
+            const video = document.getElementById('video-element');
+            video.src = PROXY + encodeURIComponent(url);
+            player.style.display = 'block';
+            video.play();
+        }
+
+        function closeVideo() {
+            const player = document.getElementById('player');
+            const video = document.getElementById('video-element');
+            video.pause();
+            video.src = "";
+            player.style.display = 'none';
+        }
+
+        // Start the app
+        fetchPlaylist();
+    </script>
+</body>
+</html>
 <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
 <script>
 const CFG = {
