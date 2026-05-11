@@ -14,7 +14,8 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install @capacitor/cli@latest @capacitor/core@latest @capacitor/android@latest
 
       - name: Initialize Capacitor
         run: |
@@ -25,16 +26,21 @@ jobs:
 
       - name: Configure Android Manifest
         run: |
-          # This replaces the standard manifest with your Pro settings
           cat <<EOF > android/app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.rayhan.desiflix">
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <application 
                   android:hardwareAccelerated="true" 
                   android:largeHeap="true" 
                   android:usesCleartextTraffic="true"
+                  android:icon="@mipmap/ic_launcher"
                   android:label="DesiFlix">
-                  <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBarLaunch" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
+                  <activity 
+                      android:name=".MainActivity" 
+                      android:exported="true" 
+                      android:screenOrientation="portrait" 
+                      android:theme="@style/AppTheme.NoActionBarLaunch" 
+                      android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
