@@ -13,20 +13,30 @@ jobs:
         with:
           node-version: 20
 
-      - name: Prepare Web Assets
+      - name: Clean and Prepare
         run: |
+          rm -rf android www package-lock.json
           mkdir -p www
           cp index.html www/index.html
 
-      - name: Install Tools & Initialize
+      - name: Install Dependencies
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          # Force initialize the config file
-          npx cap init DesiFlix com.rayhan.desiflix --web-dir www --npm-client npm
+
+      - name: Create Fresh Capacitor Config
+        run: |
+          # This creates the capacitor.config.json file automatically
+          cat <<EOF > capacitor.config.json
+          {
+            "appId": "com.rayhan.desiflix",
+            "appName": "DesiFlix",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }
+          EOF
 
       - name: Add Android Platform
         run: |
-          # We use 'npx cap add' and 'npx cap sync' to ensure the folder exists
           npx cap add android
           npx cap sync android
 
@@ -48,7 +58,6 @@ jobs:
                   </activity>
               </application>
               <uses-permission android:name="android.permission.INTERNET" />
-              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
           </manifest>
           EOF
 
@@ -64,8 +73,9 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload Finished APK
         uses: actions/upload-artifact@v4
         with:
           name: DesiFlix-Pro-Build
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
