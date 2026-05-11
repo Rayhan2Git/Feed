@@ -6,9 +6,6 @@
 <meta name="theme-color" content="#000000">
 <title>DesiFlix Pro 🍒</title>
 <style>
-/* ═══════════════════════════════════════
-   THEME & RESET (Netflix Dark Mode)
-═══════════════════════════════════════ */
 :root {
   --red: #e50914;
   --bg: #000;
@@ -25,9 +22,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: var(--bg); color: var(--text); font-family: sans-serif; height: 100vh; overflow: hidden; }
 
-/* ═══════════════════════════════════════
-   SPLASH SCREEN
-═══════════════════════════════════════ */
+/* SPLASH SCREEN */
 #splash {
   position: fixed; inset: 0; z-index: 9999; background: #000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -36,30 +31,29 @@ body { background: var(--bg); color: var(--text); font-family: sans-serif; heigh
 .cherry { font-size: 80px; animation: pulse 2s infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-/* ═══════════════════════════════════════
-   LAYOUT
-═══════════════════════════════════════ */
+/* APP LAYOUT */
 #app { display: none; height: 100%; flex-direction: column; }
-.page { display: none; height: calc(100% - var(--nav-h)); overflow-y: auto; padding-bottom: 20px; }
-.active { display: block; }
+.page { display: none; height: calc(100% - var(--nav-h)); overflow-y: auto; padding-top: var(--safe-top); }
+.page.active { display: block; }
 
-/* Bottom Nav */
+/* TOP BAR */
+header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: fixed; top: 0; width: 100%; z-index: 100; }
+
+/* NAV */
 nav {
-  height: var(--nav-h); background: rgba(0,0,0,0.9);
+  height: var(--nav-h); background: rgba(0,0,0,0.95);
   backdrop-filter: blur(10px); border-top: 1px solid var(--border);
   display: flex; justify-content: space-around; align-items: center;
   padding-bottom: var(--safe-bot);
 }
-.nav-item { color: var(--muted); text-align: center; font-size: 10px; flex: 1; }
+.nav-item { color: var(--muted); text-align: center; font-size: 10px; flex: 1; text-decoration: none; }
 .nav-item.active-tab { color: var(--red); }
-.nav-item i { display: block; font-size: 24px; margin-bottom: 2px; }
+.nav-item i { display: block; font-size: 22px; margin-bottom: 2px; font-style: normal; }
 
-/* Video Player Overlay */
-#playerOverlay {
-  position: fixed; inset: 0; z-index: 1000; background: #000; display: none;
-}
+/* PLAYER */
+#playerOverlay { position: fixed; inset: 0; z-index: 10000; background: #000; display: none; }
 video { width: 100%; height: 100%; object-fit: contain; }
-.close-player { position: absolute; top: 30px; left: 20px; font-size: 30px; z-index: 1010; }
+.close-btn { position: absolute; top: 40px; left: 20px; font-size: 30px; color: #fff; z-index: 10001; text-shadow: 0 0 10px #000; }
 </style>
 </head>
 <body>
@@ -67,27 +61,38 @@ video { width: 100%; height: 100%; object-fit: contain; }
 <div id="splash">
   <div class="cherry">🍒</div>
   <h1 style="color:var(--red); letter-spacing: 4px; margin-top:10px;">DESIFLIX</h1>
-  <p id="splashVer" style="font-size:12px; color:var(--dim); margin-top:20px;">v1.0.0</p>
+  <p id="splashVer" style="font-size:12px; color:#555; margin-top:20px;">v1.1.0</p>
 </div>
 
 <div id="app">
-  <header style="padding: 20px 20px 10px; display:flex; justify-content:space-between; align-items:center;">
+  <header id="topBar">
     <span style="color:var(--red); font-weight:bold; font-size:24px;">🍒</span>
-    <div id="searchBtn" style="font-size:20px;">🔍</div>
+    <div style="font-size:20px;">🔍</div>
   </header>
 
-  <main style="flex:1; overflow:hidden; position:relative;">
+  <main style="flex:1; overflow:hidden;">
     <section id="homePage" class="page active">
-       <div style="padding:20px; text-align:center; color:var(--muted);">Loading Feed...</div>
+       <div id="feed" style="padding: 80px 15px 20px;">
+         <h2 style="margin-bottom:15px;">Recently Added</h2>
+         <div id="movieContainer" style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+           </div>
+       </div>
     </section>
     
     <section id="scrollPage" class="page">
-      </section>
+      <div style="height:100%; display:flex; align-items:center; justify-content:center; color:var(--muted);">
+        Shorts/Scroll Content Coming Soon
+      </div>
+    </section>
 
     <section id="profilePage" class="page">
-      <div style="padding:40px 20px;">
-        <h2>Settings</h2>
-        <button onclick="checkForUpdates()" style="margin-top:20px; background:var(--red); color:#fff; border:none; padding:10px 20px; border-radius:4px;">Check for Update</button>
+      <div style="padding:100px 20px;">
+        <h2>My Profile</h2>
+        <div style="margin-top:20px; padding:15px; background:var(--card); border-radius:8px;">
+          <p style="color:var(--muted)">App Version</p>
+          <p>1.1.0 (Pro Build)</p>
+        </div>
+        <button onclick="location.reload()" style="margin-top:20px; width:100%; background:var(--red); color:#fff; border:none; padding:15px; border-radius:8px; font-weight:bold;">Refresh App</button>
       </div>
     </section>
   </main>
@@ -100,15 +105,118 @@ video { width: 100%; height: 100%; object-fit: contain; }
 </div>
 
 <div id="playerOverlay">
-  <div class="close-player" onclick="closePlayer()">✕</div>
-  <video id="mainPlayer" controls autoplay playsinline></video>
+  <div class="close-btn" onclick="closePlayer()">✕</div>
+  <video id="mainPlayer" controls playsinline></video>
 </div>
 
 <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
 <script>
-// CONFIG
 const CFG = {
   m3u: "https://raw.githubusercontent.com/Rayhan2Git/Feed/main/playlist.m3u",
+  proxy: "https://feedscroll.rayhandox.workers.dev/?url=",
+  version: "1.1.0"
+};
+
+// 1. ANDROID BACK BUTTON
+if (window.Capacitor) {
+  const { App } = Capacitor.Plugins;
+  Capacitor.Plugins.App.addListener('backButton', () => {
+    if (document.getElementById('playerOverlay').style.display === 'block') {
+      closePlayer();
+    } else {
+      const isHome = document.getElementById('homePage').classList.contains('active');
+      isHome ? Capacitor.Plugins.App.exitApp() : switchTab('home');
+    }
+  });
+}
+
+// 2. TAB SWITCHER
+function switchTab(tabId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(tabId + 'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active-tab'));
+  event.currentTarget.classList.add('active-tab');
+}
+
+// 3. VIDEO PLAYER
+function openPlayer(url) {
+  const video = document.getElementById('mainPlayer');
+  video.src = CFG.proxy + encodeURIComponent(url);
+  document.getElementById('playerOverlay').style.display = 'block';
+  video.play();
+}
+
+function closePlayer() {
+  const video = document.getElementById('mainPlayer');
+  video.pause();
+  video.src = "";
+  document.getElementById('playerOverlay').style.display = 'none';
+}
+
+// 4. FAIL-SAFE INITIALIZATION
+window.onload = () => {
+  // Start loading data
+  loadM3U();
+
+  // If app takes longer than 4s to load, hide splash anyway
+  setTimeout(hideSplash, 4000);
+};
+
+function hideSplash() {
+  const splash = document.getElementById('splash');
+  if (splash.style.display !== 'none') {
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+    }, 600);
+  }
+}
+
+async function loadM3U() {
+  try {
+    const res = await fetch(CFG.m3u);
+    const text = await res.text();
+    parseM3U(text);
+    hideSplash(); // Success, hide splash
+  } catch (err) {
+    console.error("Load error:", err);
+    // Even if error, splash will hide due to the timeout in window.onload
+  }
+}
+
+function parseM3U(data) {
+  const lines = data.split('\n');
+  const container = document.getElementById('movieContainer');
+  let currentItem = {};
+
+  lines.forEach(line => {
+    if (line.startsWith('#EXTINF:')) {
+      const title = line.split(',')[1] || "Untitled";
+      const thumbMatch = line.match(/tvg-logo="([^"]+)"/);
+      currentItem.title = title;
+      currentItem.thumb = thumbMatch ? thumbMatch[1] : "https://via.placeholder.com/150x220?text=No+Image";
+    } else if (line.startsWith('http')) {
+      currentItem.url = line.trim();
+      renderItem(currentItem);
+      currentItem = {};
+    }
+  });
+}
+
+function renderItem(item) {
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div onclick="openPlayer('${item.url}')" style="background:var(--surface); border-radius:4px; overflow:hidden;">
+      <img src="${item.thumb}" style="width:100%; aspect-ratio:2/3; object-fit:cover; display:block;">
+      <p style="font-size:10px; padding:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.title}</p>
+    </div>
+  `;
+  document.getElementById('movieContainer').appendChild(div);
+}
+</script>
+</body>
+</html>
   proxy: "https://feedscroll.rayhandox.workers.dev/?url=",
   version: "1.1.0"
 };
@@ -170,6 +278,48 @@ window.onload = () => {
   
   // Load M3U logic goes here...
 };
+   // ════════════════════════════════════════
+//  FAIL-SAFE INITIALIZATION
+// ════════════════════════════════════════
+window.onload = () => {
+  console.log("App Started...");
+
+  // FORCE REVEAL: If the app is still stuck after 5 seconds, show it anyway
+  const forceReveal = setTimeout(() => {
+    hideSplash();
+  }, 5000);
+
+  initApp().then(() => {
+    clearTimeout(forceReveal);
+    hideSplash();
+  }).catch(err => {
+    console.error("Init failed, revealing anyway", err);
+    hideSplash();
+  });
+};
+
+async function initApp() {
+  try {
+    // Attempt to load your data
+    await loadData(); 
+  } catch (e) {
+    console.log("Data load failed, using offline mode");
+  }
+}
+
+function hideSplash() {
+  const splash = document.getElementById('splash');
+  const app = document.getElementById('app');
+  
+  if(splash) {
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      if(app) app.style.display = 'flex';
+    }, 600);
+  }
+}
+   
 </script>
 </body>
 </html>
