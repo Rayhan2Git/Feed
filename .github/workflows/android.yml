@@ -1,0 +1,95 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  BUILD_MODE: prod
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Type check
+        run: pnpm tsc --noEmit
+
+      - name: Build web app
+        run: pnpm build
+
+      - name: Set up Capacitor
+        run: |
+          # Check if android folder exists, if not run cap init
+          if [ ! -d "android" ]; then
+            pnpm add @capacitor/core @capacitor/cli @capacitor/android
+            npx cap init "FeedScroll" "com.rayhandox.feedscroll" --web-dir=dist
+          else
+            # Just ensure capacitor deps are installed
+            pnpm add @capacitor/core @capacitor/cli @capacitor/android
+          fi
+
+      - name: Sync Capacitor to Android
+        run: npx cap sync android
+
+      - name: Build Android APK (Debug)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          ls -la app/build/outputs/apk/debug/
+
+      - name: Build Android APK (Release)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > release.jks
+            cd android
+            ./gradlew assembleRelease \
+              -PkeystoreFile=../release.jks \
+              -Psigning.keyAlias=$KEY_ALIAS \
+              -Psigning.keyPassword=$KEY_PASSWORD \
+              -Psigning.storePassword=$STORE_PASSWORD
+            ls -la app/build/outputs/apk/release/
+          else
+            echo "Release signing keys not configured. Run 'Debug' instead or add secrets."
+          fi
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: feedscroll-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+      - name: Upload Release APK
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: feedscroll-release.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 7
