@@ -8063,7 +8063,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2253,
+    "highest_id": 2259,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -16504,11 +16504,47 @@
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2249/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2249/2249.mp4",
         "needs_proxy": false
+      },
+      "2254": {
+        "title": "Video 2254",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2254/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2254/2254.mp4",
+        "needs_proxy": false
+      },
+      "2256": {
+        "title": "Video 2256",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2256/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2256/2256.mp4",
+        "needs_proxy": false
+      },
+      "2258": {
+        "title": "Video 2258",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2258/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2258/2258.mp4",
+        "needs_proxy": false
+      },
+      "2257": {
+        "title": "Video 2257",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2257/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2257/2257.mp4",
+        "needs_proxy": false
+      },
+      "2259": {
+        "title": "Video 2259",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2259/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2259/2259.mp4",
+        "needs_proxy": false
+      },
+      "2255": {
+        "title": "Video 2255",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2255/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2255/2255.mp4",
+        "needs_proxy": false
       }
     }
   },
   "xahani": {
-    "highest_id": 818,
+    "highest_id": 819,
     "videos": {
       "1": {
         "title": "Sexy Punjabi girl ki fingering wali Desi Sex MMS Video",
@@ -19934,6 +19970,12 @@
         "title": "Video 815",
         "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/815/320x180/1.jpg",
         "cdn_url": "https://cdn.xahani.com/0/815/815.mp4",
+        "needs_proxy": true
+      },
+      "819": {
+        "title": "Video 819",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/819/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/819/819.mp4",
         "needs_proxy": true
       }
     }
