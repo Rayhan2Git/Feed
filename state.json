@@ -8063,7 +8063,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2259,
+    "highest_id": 2260,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -16540,11 +16540,17 @@
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2255/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2255/2255.mp4",
         "needs_proxy": false
+      },
+      "2260": {
+        "title": "Video 2260",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2260/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2260/2260.mp4",
+        "needs_proxy": false
       }
     }
   },
   "xahani": {
-    "highest_id": 819,
+    "highest_id": 824,
     "videos": {
       "1": {
         "title": "Sexy Punjabi girl ki fingering wali Desi Sex MMS Video",
@@ -19976,6 +19982,36 @@
         "title": "Video 819",
         "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/819/320x180/1.jpg",
         "cdn_url": "https://cdn.xahani.com/0/819/819.mp4",
+        "needs_proxy": true
+      },
+      "821": {
+        "title": "Video 821",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/821/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/821/821.mp4",
+        "needs_proxy": true
+      },
+      "822": {
+        "title": "Video 822",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/822/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/822/822.mp4",
+        "needs_proxy": true
+      },
+      "820": {
+        "title": "Video 820",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/820/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/820/820.mp4",
+        "needs_proxy": true
+      },
+      "823": {
+        "title": "Video 823",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/823/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/823/823.mp4",
+        "needs_proxy": true
+      },
+      "824": {
+        "title": "Video 824",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/824/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/824/824.mp4",
         "needs_proxy": true
       }
     }
