@@ -8435,7 +8435,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2337,
+    "highest_id": 2341,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -17356,11 +17356,35 @@
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2337/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2337/2337.mp4",
         "needs_proxy": false
+      },
+      "2339": {
+        "title": "Video 2339",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2339/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2339/2339.mp4",
+        "needs_proxy": false
+      },
+      "2338": {
+        "title": "Video 2338",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2338/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2338/2338.mp4",
+        "needs_proxy": false
+      },
+      "2341": {
+        "title": "Video 2341",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2341/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2341/2341.mp4",
+        "needs_proxy": false
+      },
+      "2340": {
+        "title": "Video 2340",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2340/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2340/2340.mp4",
+        "needs_proxy": false
       }
     }
   },
   "xahani": {
-    "highest_id": 898,
+    "highest_id": 902,
     "videos": {
       "1": {
         "title": "Sexy Punjabi girl ki fingering wali Desi Sex MMS Video",
@@ -21266,6 +21290,30 @@
         "title": "Video 896",
         "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/896/320x180/1.jpg",
         "cdn_url": "https://cdn.xahani.com/0/896/896.mp4",
+        "needs_proxy": true
+      },
+      "899": {
+        "title": "Video 899",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/899/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/899/899.mp4",
+        "needs_proxy": true
+      },
+      "900": {
+        "title": "Video 900",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/900/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/900/900.mp4",
+        "needs_proxy": true
+      },
+      "901": {
+        "title": "Video 901",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/901/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/901/901.mp4",
+        "needs_proxy": true
+      },
+      "902": {
+        "title": "Video 902",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/0/902/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/0/902/902.mp4",
         "needs_proxy": true
       }
     }
