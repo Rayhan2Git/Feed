@@ -1,6 +1,6 @@
 #EXTM3U
-# DesiNetwork AutoFeed v2.0 — Updated: 2026-07-19 23:33 UTC
-# Total: 9036 videos | 4 sites
+# DesiNetwork AutoFeed v2.0 — Updated: 2026-07-20 03:43 UTC
+# Total: 9040 videos | 4 sites
 # Proxy: https://feedscroll.rayhandox.workers.dev (for Xahani)
 
 #EXTINF:-1 tvg-id="desitales_3447" tvg-logo="https://www.desitales2.com/videos/contents/videos_screenshots/3000/3447/320x180/1.jpg" group-title="DesiTales",Video 3447
@@ -13448,6 +13448,18 @@ https://cdn.desikahani2.net/0/101/101.mp4
 
 #EXTINF:-1 tvg-id="desikahani_100" tvg-logo="https://www.desikahani2.net/videos/contents/videos_screenshots/0/100/320x180/1.jpg" group-title="DesiKahani",Video 100
 https://cdn.desikahani2.net/0/100/100.mp4
+
+#EXTINF:-1 tvg-id="xahani_1062" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1062/320x180/1.jpg" group-title="Xahani",Video 1062
+https://cdn.xahani.com/1000/1062/1062.mp4
+
+#EXTINF:-1 tvg-id="xahani_1061" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1061/320x180/1.jpg" group-title="Xahani",Video 1061
+https://cdn.xahani.com/1000/1061/1061.mp4
+
+#EXTINF:-1 tvg-id="xahani_1060" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1060/320x180/1.jpg" group-title="Xahani",Video 1060
+https://cdn.xahani.com/1000/1060/1060.mp4
+
+#EXTINF:-1 tvg-id="xahani_1059" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1059/320x180/1.jpg" group-title="Xahani",Video 1059
+https://cdn.xahani.com/1000/1059/1059.mp4
 
 #EXTINF:-1 tvg-id="xahani_1058" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1058/320x180/1.jpg" group-title="Xahani",Video 1058
 https://cdn.xahani.com/1000/1058/1058.mp4
