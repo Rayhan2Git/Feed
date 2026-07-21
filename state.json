@@ -9209,7 +9209,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2518,
+    "highest_id": 2519,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -19216,11 +19216,17 @@
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2518/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2518/2518.mp4",
         "needs_proxy": false
+      },
+      "2519": {
+        "title": "Video 2519",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2519/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2519/2519.mp4",
+        "needs_proxy": false
       }
     }
   },
   "xahani": {
-    "highest_id": 1066,
+    "highest_id": 1068,
     "videos": {
       "1": {
         "title": "Sexy Punjabi girl ki fingering wali Desi Sex MMS Video",
@@ -24134,6 +24140,18 @@
         "title": "Video 1065",
         "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1065/320x180/1.jpg",
         "cdn_url": "https://cdn.xahani.com/1000/1065/1065.mp4",
+        "needs_proxy": true
+      },
+      "1067": {
+        "title": "Video 1067",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1067/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1067/1067.mp4",
+        "needs_proxy": true
+      },
+      "1068": {
+        "title": "Video 1068",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1068/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1068/1068.mp4",
         "needs_proxy": true
       }
     }
