@@ -9329,7 +9329,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2538,
+    "highest_id": 2539,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -19456,11 +19456,17 @@
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2535/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2535/2535.mp4",
         "needs_proxy": false
+      },
+      "2539": {
+        "title": "Video 2539",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2539/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2539/2539.mp4",
+        "needs_proxy": false
       }
     }
   },
   "xahani": {
-    "highest_id": 1082,
+    "highest_id": 1086,
     "videos": {
       "1": {
         "title": "Sexy Punjabi girl ki fingering wali Desi Sex MMS Video",
@@ -24470,6 +24476,30 @@
         "title": "Video 1081",
         "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1081/320x180/1.jpg",
         "cdn_url": "https://cdn.xahani.com/1000/1081/1081.mp4",
+        "needs_proxy": true
+      },
+      "1085": {
+        "title": "Video 1085",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1085/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1085/1085.mp4",
+        "needs_proxy": true
+      },
+      "1083": {
+        "title": "Video 1083",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1083/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1083/1083.mp4",
+        "needs_proxy": true
+      },
+      "1084": {
+        "title": "Video 1084",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1084/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1084/1084.mp4",
+        "needs_proxy": true
+      },
+      "1086": {
+        "title": "Video 1086",
+        "thumb": "https://www.xahani.com/videos/contents/videos_screenshots/1000/1086/320x180/1.jpg",
+        "cdn_url": "https://cdn.xahani.com/1000/1086/1086.mp4",
         "needs_proxy": true
       }
     }
