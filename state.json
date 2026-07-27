@@ -9383,7 +9383,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2539,
+    "highest_id": 2544,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -19515,6 +19515,36 @@
         "title": "Video 2539",
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2539/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2539/2539.mp4",
+        "needs_proxy": false
+      },
+      "2542": {
+        "title": "Video 2542",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2542/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2542/2542.mp4",
+        "needs_proxy": false
+      },
+      "2540": {
+        "title": "Video 2540",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2540/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2540/2540.mp4",
+        "needs_proxy": false
+      },
+      "2544": {
+        "title": "Video 2544",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2544/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2544/2544.mp4",
+        "needs_proxy": false
+      },
+      "2543": {
+        "title": "Video 2543",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2543/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2543/2543.mp4",
+        "needs_proxy": false
+      },
+      "2541": {
+        "title": "Video 2541",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2541/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2541/2541.mp4",
         "needs_proxy": false
       }
     }
