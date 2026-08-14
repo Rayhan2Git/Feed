@@ -9803,7 +9803,7 @@
     }
   },
   "desikahani": {
-    "highest_id": 2646,
+    "highest_id": 2648,
     "videos": {
       "100": {
         "title": "Video 100",
@@ -20577,6 +20577,18 @@
         "title": "Video 2644",
         "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2644/390x218/1.jpg",
         "cdn_url": "https://cdn.desikahani2.net/2000/2644/2644.mp4",
+        "needs_proxy": false
+      },
+      "2648": {
+        "title": "Video 2648",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2648/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2648/2648.mp4",
+        "needs_proxy": false
+      },
+      "2647": {
+        "title": "Video 2647",
+        "thumb": "https://www.desikahani2.net/videos/contents/videos_screenshots/2000/2647/390x218/1.jpg",
+        "cdn_url": "https://cdn.desikahani2.net/2000/2647/2647.mp4",
         "needs_proxy": false
       }
     }
