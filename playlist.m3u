@@ -1,6 +1,6 @@
 #EXTM3U
-# DesiNetwork AutoFeed v2.0 — Updated: 2026-08-19 23:28 UTC
-# Total: 9804 videos | 4 sites
+# DesiNetwork AutoFeed v2.0 — Updated: 2026-08-19 23:52 UTC
+# Total: 9810 videos | 4 sites
 # Proxy: https://feedscroll.rayhandox.workers.dev (for Xahani)
 
 #EXTINF:-1 tvg-id="desitales_3569" tvg-logo="https://www.desitales2.com/videos/contents/videos_screenshots/3000/3569/320x180/1.jpg" group-title="DesiTales",Forest officer saves mallu village girl and fucks her in jungle
@@ -14315,6 +14315,24 @@ https://cdn.desikahani2.net/0/101/101.mp4
 
 #EXTINF:-1 tvg-id="desikahani_100" tvg-logo="https://www.desikahani2.net/videos/contents/videos_screenshots/0/100/320x180/1.jpg" group-title="DesiKahani",Video 100
 https://cdn.desikahani2.net/0/100/100.mp4
+
+#EXTINF:-1 tvg-id="xahani_1220" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1220/320x180/1.jpg" group-title="Xahani",Video 1220
+https://cdn.xahani.com/1000/1220/1220.mp4
+
+#EXTINF:-1 tvg-id="xahani_1219" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1219/320x180/1.jpg" group-title="Xahani",Video 1219
+https://cdn.xahani.com/1000/1219/1219.mp4
+
+#EXTINF:-1 tvg-id="xahani_1218" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1218/320x180/1.jpg" group-title="Xahani",Video 1218
+https://cdn.xahani.com/1000/1218/1218.mp4
+
+#EXTINF:-1 tvg-id="xahani_1217" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1217/320x180/1.jpg" group-title="Xahani",Video 1217
+https://cdn.xahani.com/1000/1217/1217.mp4
+
+#EXTINF:-1 tvg-id="xahani_1216" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1216/320x180/1.jpg" group-title="Xahani",Video 1216
+https://cdn.xahani.com/1000/1216/1216.mp4
+
+#EXTINF:-1 tvg-id="xahani_1215" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1215/320x180/1.jpg" group-title="Xahani",Video 1215
+https://cdn.xahani.com/1000/1215/1215.mp4
 
 #EXTINF:-1 tvg-id="xahani_1214" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1214/320x180/1.jpg" group-title="Xahani",Video 1214
 https://cdn.xahani.com/1000/1214/1214.mp4
