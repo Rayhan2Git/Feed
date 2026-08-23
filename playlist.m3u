@@ -1,7 +1,10 @@
 #EXTM3U
-# DesiNetwork AutoFeed v2.0 — Updated: 2026-08-23 14:30 UTC
-# Total: 9899 videos | 4 sites
+# DesiNetwork AutoFeed v2.0 — Updated: 2026-08-23 14:55 UTC
+# Total: 9900 videos | 4 sites
 # Proxy: https://feedscroll.rayhandox.workers.dev (for Xahani)
+
+#EXTINF:-1 tvg-id="desitales_3585" tvg-logo="https://www.desitales2.com/videos/contents/videos_screenshots/3000/3585/320x180/1.jpg" group-title="DesiTales",Video 3585
+https://cdn.desitales2.com/3000/3585/3585.mp4
 
 #EXTINF:-1 tvg-id="desitales_3584" tvg-logo="https://www.desitales2.com/videos/contents/videos_screenshots/3000/3584/320x180/1.jpg" group-title="DesiTales",Video 3584
 https://cdn.desitales2.com/3000/3584/3584.mp4
