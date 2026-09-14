@@ -1,6 +1,6 @@
 #EXTM3U
-# DesiNetwork AutoFeed v2.0 — Updated: 2026-09-13 23:24 UTC
-# Total: 10421 videos | 4 sites
+# DesiNetwork AutoFeed v2.0 — Updated: 2026-09-14 01:29 UTC
+# Total: 10427 videos | 4 sites
 # Proxy: https://feedscroll.rayhandox.workers.dev (for Xahani)
 
 #EXTINF:-1 tvg-id="desitales_3672" tvg-logo="https://www.desitales2.com/videos/contents/videos_screenshots/3000/3672/320x180/1.jpg" group-title="DesiTales",Video 3672
@@ -15065,6 +15065,24 @@ https://cdn.desikahani2.net/0/101/101.mp4
 
 #EXTINF:-1 tvg-id="desikahani_100" tvg-logo="https://www.desikahani2.net/videos/contents/videos_screenshots/0/100/320x180/1.jpg" group-title="DesiKahani",Video 100
 https://cdn.desikahani2.net/0/100/100.mp4
+
+#EXTINF:-1 tvg-id="xahani_1357" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1357/320x180/1.jpg" group-title="Xahani",Video 1357
+https://cdn.xahani.com/1000/1357/1357.mp4
+
+#EXTINF:-1 tvg-id="xahani_1356" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1356/320x180/1.jpg" group-title="Xahani",Video 1356
+https://cdn.xahani.com/1000/1356/1356.mp4
+
+#EXTINF:-1 tvg-id="xahani_1355" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1355/320x180/1.jpg" group-title="Xahani",Video 1355
+https://cdn.xahani.com/1000/1355/1355.mp4
+
+#EXTINF:-1 tvg-id="xahani_1354" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1354/320x180/1.jpg" group-title="Xahani",Video 1354
+https://cdn.xahani.com/1000/1354/1354.mp4
+
+#EXTINF:-1 tvg-id="xahani_1353" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1353/320x180/1.jpg" group-title="Xahani",Video 1353
+https://cdn.xahani.com/1000/1353/1353.mp4
+
+#EXTINF:-1 tvg-id="xahani_1352" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1352/320x180/1.jpg" group-title="Xahani",Video 1352
+https://cdn.xahani.com/1000/1352/1352.mp4
 
 #EXTINF:-1 tvg-id="xahani_1351" tvg-logo="https://www.xahani.com/videos/contents/videos_screenshots/1000/1351/320x180/1.jpg" group-title="Xahani",Video 1351
 https://cdn.xahani.com/1000/1351/1351.mp4
